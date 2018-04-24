@@ -6,7 +6,7 @@ var isHex = require("../").isHex;
 
 module.exports = {
 
-  structure: function (keythereum, keyObject) {
+  structure: function (happyuckeys, keyObject) {
     var keyObjectCrypto = keyObject.Crypto || keyObject.crypto;
     assert.instanceOf(keyObject, Object);
     assert.property(keyObject, "address");
@@ -53,7 +53,7 @@ module.exports = {
     assert(keyObject.version === "1" || keyObject.version === 3);
   },
 
-  values: function (keythereum, t, keyObject) {
+  values: function (happyuckeys, t, keyObject) {
     var keyObjectCrypto = keyObject.Crypto || keyObject.crypto;
     assert.strictEqual(keyObject.address, t.expected.address);
     assert.strictEqual(
@@ -86,7 +86,7 @@ module.exports = {
         );
         assert.strictEqual(
           keyObjectCrypto.kdfparams.n,
-          keythereum.constants.scrypt.n
+          happyuckeys.constants.scrypt.n
         );
         assert.strictEqual(
           keyObjectCrypto.kdfparams.r,
@@ -94,7 +94,7 @@ module.exports = {
         );
         assert.strictEqual(
           keyObjectCrypto.kdfparams.r,
-          keythereum.constants.scrypt.r
+          happyuckeys.constants.scrypt.r
         );
         assert.strictEqual(
           keyObjectCrypto.kdfparams.p,
@@ -102,7 +102,7 @@ module.exports = {
         );
         assert.strictEqual(
           keyObjectCrypto.kdfparams.p,
-          keythereum.constants.scrypt.p
+          happyuckeys.constants.scrypt.p
         );
       } else {
         assert.strictEqual(
@@ -111,7 +111,7 @@ module.exports = {
         );
         assert.strictEqual(
           keyObjectCrypto.kdfparams.c,
-          keythereum.constants.pbkdf2.c
+          happyuckeys.constants.pbkdf2.c
         );
         assert.strictEqual(
           keyObjectCrypto.kdfparams.prf,
@@ -119,7 +119,7 @@ module.exports = {
         );
         assert.strictEqual(
           keyObjectCrypto.kdfparams.prf,
-          keythereum.constants.pbkdf2.prf
+          happyuckeys.constants.pbkdf2.prf
         );
       }
       assert.strictEqual(
@@ -128,7 +128,7 @@ module.exports = {
       );
       assert.strictEqual(
         keyObjectCrypto.kdfparams.dklen,
-        keythereum.constants.pbkdf2.dklen
+        happyuckeys.constants.pbkdf2.dklen
       );
       assert.strictEqual(
         keyObjectCrypto.kdfparams.salt,

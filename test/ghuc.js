@@ -6,8 +6,8 @@ var fs = require("fs");
 var join = require("path").join;
 var crypto = require("crypto");
 var assert = require("chai").assert;
-var geth = require("geth");
-var keythereum = require("../");
+var ghuc = require("ghuc");
+var happyuckeys = require("../");
 var checkKeyObj = require("./checkKeyObj");
 
 var NUM_TESTS = 1000;
@@ -22,25 +22,25 @@ var options = {
     rpcport: 8547,
     nodiscover: null,
     datadir: DATADIR,
-    ipcpath: join(DATADIR, "geth.ipc"),
+    ipcpath: join(DATADIR, "ghuc.ipc"),
     password: join(DATADIR, ".password")
   }
 };
 
-var pbkdf2 = keythereum.crypto.pbkdf2;
-var pbkdf2Sync = keythereum.crypto.pbkdf2Sync;
+var pbkdf2 = happyuckeys.crypto.pbkdf2;
+var pbkdf2Sync = happyuckeys.crypto.pbkdf2Sync;
 
-// geth.debug = true;
+// ghuc.debug = true;
 
-function createEthereumKey(passphrase) {
-  var dk = keythereum.create();
-  var key = keythereum.dump(passphrase, dk.privateKey, dk.salt, dk.iv);
+function createHappyUCKey(passphrase) {
+  var dk = happyuckeys.create();
+  var key = happyuckeys.dump(passphrase, dk.privateKey, dk.salt, dk.iv);
   return JSON.stringify(key);
 }
 
-keythereum.constants.quiet = true;
+happyuckeys.constants.quiet = true;
 
-describe("Unlock randomly-generated accounts in geth", function () {
+describe("Unlock randomly-generated accounts in ghuc", function () {
   var password, hashRounds, i;
 
   var test = function (t) {
@@ -52,31 +52,31 @@ describe("Unlock randomly-generated accounts in geth", function () {
       this.timeout(TIMEOUT*2);
 
       if (t.sjcl) {
-        keythereum.crypto.pbkdf2 = undefined;
-        keythereum.crypto.pbkdf2Sync = undefined;
+        happyuckeys.crypto.pbkdf2 = undefined;
+        happyuckeys.crypto.pbkdf2Sync = undefined;
       } else {
-        keythereum.crypto.pbkdf2 = pbkdf2;
-        keythereum.crypto.pbkdf2Sync = pbkdf2Sync;
+        happyuckeys.crypto.pbkdf2 = pbkdf2;
+        happyuckeys.crypto.pbkdf2Sync = pbkdf2Sync;
       }
 
-      json = createEthereumKey(t.password);
+      json = createHappyUCKey(t.password);
       assert.isNotNull(json);
 
       keyObject = JSON.parse(json);
       assert.isObject(keyObject);
-      checkKeyObj.structure(keythereum, keyObject);
+      checkKeyObj.structure(happyuckeys, keyObject);
 
-      keythereum.exportToFile(keyObject, join(DATADIR, "keystore"), function (keypath) {
+      happyuckeys.exportToFile(keyObject, join(DATADIR, "keystore"), function (keypath) {
         fs.writeFile(options.flags.password, t.password, function (ex) {
           var fail;
           if (ex) return done(ex);
           options.flags.unlock = keyObject.address;
-          options.flags.etherbase = keyObject.address;
-          geth.start(options, {
+          options.flags.coinbase = keyObject.address;
+          ghuc.start(options, {
             stderr: function (data) {
-              if (geth.debug) process.stdout.write(data);
+              if (ghuc.debug) process.stdout.write(data);
               if (data.toString().indexOf("16MB") > -1) {
-                geth.trigger(null, geth.proc);
+                ghuc.trigger(null, ghuc.proc);
               }
             },
             close: function () {
@@ -90,18 +90,18 @@ describe("Unlock randomly-generated accounts in geth", function () {
             }
           }, function (err, spawned) {
             if (err) return done(err);
-            if (!spawned) return done(new Error("where's the geth?"));
-            geth.stdout("data", function (data) {
+            if (!spawned) return done(new Error("where's the ghuc?"));
+            ghuc.stdout("data", function (data) {
               var unlocked = "Account '" + keyObject.address+
                 "' (" + keyObject.address + ") unlocked.";
               if (data.toString().indexOf(unlocked) > -1) {
-                geth.stop();
+                ghuc.stop();
               }
             });
-            geth.stderr("data", function (data) {
+            ghuc.stderr("data", function (data) {
               if (data.toString().indexOf("Fatal") > -1) {
                 fail = new Error(data);
-                geth.stop();
+                ghuc.stop();
               }
             });
           });
@@ -115,8 +115,8 @@ describe("Unlock randomly-generated accounts in geth", function () {
     password = crypto.randomBytes(Math.ceil(Math.random()*100));
     hashRounds = Math.ceil(Math.random() * 300000);
 
-    keythereum.constants.pbkdf2.c = hashRounds;
-    keythereum.constants.scrypt.n = hashRounds;
+    happyuckeys.constants.pbkdf2.c = hashRounds;
+    happyuckeys.constants.scrypt.n = hashRounds;
 
     test({
       sjcl: false,

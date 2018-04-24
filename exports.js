@@ -1,2 +1,2 @@
-var keythereum = global.keythereum || require('./');
-global.keythereum = keythereum;
+var happyuckeys = global.happyuckeys || require('./');
+global.happyuckeys = happyuckeys;

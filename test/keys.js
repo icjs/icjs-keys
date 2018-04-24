@@ -6,7 +6,7 @@ var fs = require("fs");
 var path = require("path");
 var crypto = require("crypto");
 var assert = require("chai").assert;
-var keythereum = require("../");
+var happyuckeys = require("../");
 var checkKeyObj = require("./checkKeyObj");
 var DEBUG = false;
 
@@ -17,12 +17,12 @@ var TIMEOUT = 120000;
 var privateKey = crypto.randomBytes(32);
 
 // suppress logging
-keythereum.constants.quiet = !DEBUG;
+happyuckeys.constants.quiet = !DEBUG;
 
 describe("Check if valid hex-encoded string", function () {
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(keythereum.isHex(t.s));
+      t.assertions(happyuckeys.isHex(t.s));
     });
   };
   test({
@@ -79,7 +79,7 @@ describe("Check if valid hex-encoded string", function () {
 describe("Check if valid base64-encoded string", function () {
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(keythereum.isBase64(t.s));
+      t.assertions(happyuckeys.isBase64(t.s));
     });
   };
   // test cases: https://github.com/chriso/validator.js/blob/master/test/validators.js
@@ -135,7 +135,7 @@ describe("Check if valid base64-encoded string", function () {
 describe("Convert a string to a Buffer", function () {
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(keythereum.str2buf(t.params.str, t.params.enc));
+      t.assertions(happyuckeys.str2buf(t.params.str, t.params.enc));
     });
   };
   test({
@@ -236,7 +236,7 @@ describe("Convert a string to a Buffer", function () {
 describe("Check if selected cipher is available", function () {
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(keythereum.isCipherAvailable(t.cipher));
+      t.assertions(happyuckeys.isCipherAvailable(t.cipher));
     });
   };
   test({
@@ -265,7 +265,7 @@ describe("Check if selected cipher is available", function () {
 describe("Private key recovery", function () {
 
   // password used as secret key for aes-256 cipher
-  var password = "wheethereum";
+  var password = "whehappyuc";
   var secret = crypto.createHash("sha256").update(password).digest("hex");
   var cipher = crypto.createCipher("aes-256-cbc", secret);
   var encryptedPrivateKey = cipher.update(privateKey, "hex", "base64");
@@ -280,12 +280,12 @@ describe("Private key recovery", function () {
   });
 });
 
-describe("Derive Ethereum address from private key", function () {
+describe("Derive HappyUC address from private key", function () {
   var test = function (t) {
     it(t.description + ": " + t.privateKey, function () {
-      t.assertions(keythereum.privateKeyToAddress(t.privateKey));
-      t.assertions(keythereum.privateKeyToAddress(Buffer.from(t.privateKey, "hex")));
-      t.assertions(keythereum.privateKeyToAddress(Buffer.from(t.privateKey, "hex").toString("base64")));
+      t.assertions(happyuckeys.privateKeyToAddress(t.privateKey));
+      t.assertions(happyuckeys.privateKeyToAddress(Buffer.from(t.privateKey, "hex")));
+      t.assertions(happyuckeys.privateKeyToAddress(Buffer.from(t.privateKey, "hex").toString("base64")));
     });
   };
   test({
@@ -356,13 +356,13 @@ describe("Create random private key, salt and initialization vector", function (
       it("create key " + i + ": " + JSON.stringify(params), function (done) {
 
         // synchronous
-        test(keythereum.create(), keythereum.constants);
-        test(keythereum.create(params), params);
+        test(happyuckeys.create(), happyuckeys.constants);
+        test(happyuckeys.create(params), params);
 
         // asynchronous
-        keythereum.create(null, function (dk) {
-          test(dk, keythereum.constants);
-          keythereum.create(params, function (dk) {
+        happyuckeys.create(null, function (dk) {
+          test(dk, happyuckeys.constants);
+          happyuckeys.create(params, function (dk) {
             test(dk, params);
             done();
           });
@@ -370,7 +370,7 @@ describe("Create random private key, salt and initialization vector", function (
       });
     };
 
-    runtest(keythereum.constants);
+    runtest(happyuckeys.constants);
     runtest({ keyBytes: 32, ivBytes: 16 });
   };
 
@@ -384,13 +384,13 @@ describe("Encryption", function () {
     var label = t.input.cipher + ": " + JSON.stringify(t.input.plaintext)+
       " -> " + t.expected.ciphertext;
     it(label, function () {
-      var oldCipher = keythereum.constants.cipher;
-      keythereum.constants.cipher = t.input.cipher;
+      var oldCipher = happyuckeys.constants.cipher;
+      happyuckeys.constants.cipher = t.input.cipher;
       assert.strictEqual(
-        keythereum.encrypt(t.input.plaintext, t.input.key, t.input.iv).toString("base64"),
+        happyuckeys.encrypt(t.input.plaintext, t.input.key, t.input.iv).toString("base64"),
         t.expected.ciphertext
       );
-      keythereum.constants.cipher = oldCipher;
+      happyuckeys.constants.cipher = oldCipher;
     });
   };
 
@@ -461,13 +461,13 @@ describe("Decryption", function () {
   var test = function (t) {
     var label = t.input.cipher + ": " + JSON.stringify(t.input.ciphertext) + " -> " + t.expected.plaintext;
     it(label, function () {
-      var oldCipher = keythereum.constants.cipher;
-      keythereum.constants.cipher = t.input.cipher;
+      var oldCipher = happyuckeys.constants.cipher;
+      happyuckeys.constants.cipher = t.input.cipher;
       assert.strictEqual(
-        keythereum.decrypt(t.input.ciphertext, t.input.key, t.input.iv).toString("hex"),
+        happyuckeys.decrypt(t.input.ciphertext, t.input.key, t.input.iv).toString("hex"),
         t.expected.plaintext
       );
-      keythereum.constants.cipher = oldCipher;
+      happyuckeys.constants.cipher = oldCipher;
     });
   };
 
@@ -533,7 +533,7 @@ describe("Decryption", function () {
 });
 
 // Test vectors:
-// https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
+// https://github.com/happyuc-project/wiki/wiki/Webu-Secret-Storage-Definition
 
 describe("Key derivation", function () {
 
@@ -541,23 +541,23 @@ describe("Key derivation", function () {
     var pbkdf2, pbkdf2Sync;
 
     before(function () {
-      pbkdf2 = keythereum.crypto.pbkdf2;
-      pbkdf2Sync = keythereum.crypto.pbkdf2Sync;
+      pbkdf2 = happyuckeys.crypto.pbkdf2;
+      pbkdf2Sync = happyuckeys.crypto.pbkdf2Sync;
     });
 
     after(function () {
-      keythereum.crypto.pbkdf2 = pbkdf2;
-      keythereum.crypto.pbkdf2Sync = pbkdf2Sync;
+      happyuckeys.crypto.pbkdf2 = pbkdf2;
+      happyuckeys.crypto.pbkdf2Sync = pbkdf2Sync;
     });
 
     it("using crypto: " + t.input.kdf, function (done) {
       var derivedKey;
       this.timeout(TIMEOUT);
-      keythereum.crypto.pbkdf2 = pbkdf2;
-      keythereum.crypto.pbkdf2Sync = pbkdf2Sync;
+      happyuckeys.crypto.pbkdf2 = pbkdf2;
+      happyuckeys.crypto.pbkdf2Sync = pbkdf2Sync;
 
       // synchronous
-      derivedKey = keythereum.deriveKey(
+      derivedKey = happyuckeys.deriveKey(
         t.input.password,
         t.input.salt,
         { kdf: t.input.kdf }
@@ -566,7 +566,7 @@ describe("Key derivation", function () {
       assert.strictEqual(derivedKey.toString("hex"), t.expected);
 
       // asynchronous
-      keythereum.deriveKey(
+      happyuckeys.deriveKey(
         t.input.password,
         t.input.salt,
         { kdf: t.input.kdf },
@@ -580,11 +580,11 @@ describe("Key derivation", function () {
     it("using sjcl: " + t.input.kdf, function (done) {
       var derivedKey;
       this.timeout(TIMEOUT);
-      keythereum.crypto.pbkdf2 = undefined;
-      keythereum.crypto.pbkdf2Sync = undefined;
+      happyuckeys.crypto.pbkdf2 = undefined;
+      happyuckeys.crypto.pbkdf2Sync = undefined;
 
       // synchronous
-      derivedKey = keythereum.deriveKey(
+      derivedKey = happyuckeys.deriveKey(
         t.input.password,
         t.input.salt,
         { kdf: t.input.kdf }
@@ -593,7 +593,7 @@ describe("Key derivation", function () {
       assert.strictEqual(derivedKey.toString("hex"), t.expected);
 
       // asynchronous
-      keythereum.deriveKey(
+      happyuckeys.deriveKey(
         t.input.password,
         t.input.salt,
         { kdf: t.input.kdf },
@@ -628,7 +628,7 @@ describe("Message authentication code", function () {
 
   var test = function (t) {
     it("convert " + JSON.stringify(t.input) + " -> " + t.output, function () {
-      var mac = keythereum.getMAC(t.input.derivedKey, t.input.ciphertext);
+      var mac = happyuckeys.getMAC(t.input.derivedKey, t.input.ciphertext);
       assert.strictEqual(mac, t.output);
     });
   };
@@ -658,7 +658,7 @@ describe("Dump private key", function () {
       this.timeout(TIMEOUT);
 
       // synchronous
-      keyObject = keythereum.dump(
+      keyObject = happyuckeys.dump(
         t.input.password,
         t.input.privateKey,
         t.input.salt,
@@ -666,11 +666,11 @@ describe("Dump private key", function () {
         { kdf: t.input.kdf }
       );
       if (keyObject.error) return done(keyObject);
-      checkKeyObj.structure(keythereum, keyObject);
-      checkKeyObj.values(keythereum, t, keyObject);
+      checkKeyObj.structure(happyuckeys, keyObject);
+      checkKeyObj.values(happyuckeys, t, keyObject);
 
       // asynchronous
-      keythereum.dump(
+      happyuckeys.dump(
         t.input.password,
         t.input.privateKey,
         t.input.salt,
@@ -678,8 +678,8 @@ describe("Dump private key", function () {
         { kdf: t.input.kdf },
         function (keyObj) {
           if (keyObj.error) return done(keyObj);
-          checkKeyObj.structure(keythereum, keyObj);
-          checkKeyObj.values(keythereum, t, keyObj);
+          checkKeyObj.structure(happyuckeys, keyObj);
+          checkKeyObj.values(happyuckeys, t, keyObj);
           done();
         }
       );
@@ -750,7 +750,7 @@ describe("Dump private key", function () {
 describe("Generate keystore filename", function () {
   var test = function (t) {
     it(t.address, function () {
-      t.assertions(keythereum.generateKeystoreFilename(t.address));
+      t.assertions(happyuckeys.generateKeystoreFilename(t.address));
     });
   };
   test({
@@ -786,7 +786,7 @@ describe("Export to file", function () {
 
   var keyObj;
 
-  if (keythereum.browser) return;
+  if (happyuckeys.browser) return;
 
   keyObj = {
     address: "008aeeda4d805471df9b2a5b0f38a0c3bcba786b",
@@ -814,7 +814,7 @@ describe("Export to file", function () {
     this.timeout(TIMEOUT);
 
     // synchronous
-    keypath = keythereum.exportToFile(keyObj);
+    keypath = happyuckeys.exportToFile(keyObj);
     outfile = keypath.split("/");
     assert.isArray(outfile);
     outfile = outfile[outfile.length - 1];
@@ -823,7 +823,7 @@ describe("Export to file", function () {
     fs.unlinkSync(keypath);
 
     // asynchronous
-    keythereum.exportToFile(keyObj, null, function (keyPath) {
+    happyuckeys.exportToFile(keyObj, null, function (keyPath) {
       var outFile = keyPath.split("/");
       assert.isArray(outFile);
       outFile = outFile[outFile.length - 1];
@@ -838,16 +838,16 @@ describe("Export to file", function () {
   it("export key to json (browser)", function (done) {
     var json;
     this.timeout(TIMEOUT);
-    keythereum.browser = true;
+    happyuckeys.browser = true;
 
     // synchronous
-    json = keythereum.exportToFile(keyObj);
+    json = happyuckeys.exportToFile(keyObj);
     assert.strictEqual(json, JSON.stringify(keyObj));
 
     // asynchronous
-    keythereum.exportToFile(keyObj, null, function (json) {
+    happyuckeys.exportToFile(keyObj, null, function (json) {
       assert.strictEqual(json, JSON.stringify(keyObj));
-      keythereum.browser = false;
+      happyuckeys.browser = false;
       done();
     });
   });
@@ -855,19 +855,19 @@ describe("Export to file", function () {
 
 describe("Import from keystore file", function () {
 
-  if (keythereum.browser) return;
+  if (happyuckeys.browser) return;
 
   function test(t) {
     var label = "[" + t.expected.crypto.kdf + "] import " + t.input.address + " from file";
     it(label, function (done) {
       var keyObject;
       this.timeout(TIMEOUT);
-      keyObject = keythereum.importFromFile(t.input.address, t.input.datadir);
-      checkKeyObj.structure(keythereum, keyObject);
-      checkKeyObj.values(keythereum, t, keyObject);
-      keythereum.importFromFile(t.input.address, t.input.datadir, function (keyObj) {
-        checkKeyObj.structure(keythereum, keyObj);
-        checkKeyObj.values(keythereum, t, keyObj);
+      keyObject = happyuckeys.importFromFile(t.input.address, t.input.datadir);
+      checkKeyObj.structure(happyuckeys, keyObject);
+      checkKeyObj.values(happyuckeys, t, keyObject);
+      happyuckeys.importFromFile(t.input.address, t.input.datadir, function (keyObj) {
+        checkKeyObj.structure(happyuckeys, keyObj);
+        checkKeyObj.values(happyuckeys, t, keyObj);
         done();
       });
     });
@@ -1106,11 +1106,11 @@ describe("Recover plaintext private key from key object", function () {
       this.timeout(TIMEOUT);
 
       // synchronous
-      dk = keythereum.recover(t.input.password, t.input.keyObject);
+      dk = happyuckeys.recover(t.input.password, t.input.keyObject);
       assert.strictEqual(dk.toString("hex"), t.expected);
 
       // asynchronous
-      keythereum.recover(t.input.password, t.input.keyObject, function (dk) {
+      happyuckeys.recover(t.input.password, t.input.keyObject, function (dk) {
         assert.strictEqual(dk.toString("hex"), t.expected);
         done();
       });

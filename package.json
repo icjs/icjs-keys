@@ -1,7 +1,7 @@
 {
-  "name": "keythereum",
+  "name": "happyuckeys",
   "version": "1.0.3",
-  "description": "Create, import and export Ethereum keys",
+  "description": "Create, import and export HappyUC keys",
   "main": "index.js",
   "directories": {
     "test": "test",
@@ -9,22 +9,22 @@
   },
   "scripts": {
     "test": "mocha test/keys.js",
-    "geth": "mocha -R progress test/keys.js && mocha -R progress test/geth.js",
+    "ghuc": "mocha -R progress test/keys.js && mocha -R progress test/ghuc.js",
     "lint": "eslint index.js && eslint gulpfile.js && eslint test/*.js",
     "coverage": "istanbul cover -x **/lib/** ./node_modules/mocha/bin/_mocha test/keys.js",
-    "build": "browserify ./exports.js > ./dist/keythereum.js && uglifyjs ./dist/keythereum.js > ./dist/keythereum.min.js",
+    "build": "browserify ./exports.js > ./dist/happyuckeys.js && uglifyjs ./dist/happyuckeys.js > ./dist/happyuckeys.min.js",
     "build:tests": "browserify test/keys.js > test/browser/bundle.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ethereumjs/keythereum.git"
+    "url": "git+https://github.com/happyucjs/happyucjs-keys.git"
   },
   "author": "Jack Peterson <jack@tinybike.net>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ethereumjs/keythereum/issues"
+    "url": "https://github.com/happyucjs/happyucjs-keys/issues"
   },
-  "homepage": "https://github.com/ethereumjs/keythereum#readme",
+  "homepage": "https://github.com/happyucjs/happyucjs-keys#readme",
   "dependencies": {
     "keccak": "1.4.0",
     "secp256k1": "3.5.0",
@@ -40,7 +40,7 @@
     "chai": "3.2.0",
     "coveralls": "2.11.3",
     "eslint": "3.17.1",
-    "geth": "0.2.2",
+    "ghuc": "0.2.2",
     "istanbul": "0.4.5",
     "mocha": "2.2.5",
     "uglify-js": "2.6.1",

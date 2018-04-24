@@ -1,31 +1,31 @@
-# keythereum
+# happyuckeys
 
-[![Build Status](https://travis-ci.org/ethereumjs/keythereum.svg?branch=master)](https://travis-ci.org/ethereumjs/keythereum) [![Coverage Status](https://coveralls.io/repos/github/ethereumjs/keythereum/badge.svg?branch=master)](https://coveralls.io/github/ethereumjs/keythereum?branch=master) [![npm version](https://badge.fury.io/js/keythereum.svg)](http://badge.fury.io/js/keythereum)
+[![Build Status](https://travis-ci.org/happyucjs/happyuckeys.svg?branch=master)](https://travis-ci.org/happyucjs/happyuckeys) [![Coverage Status](https://coveralls.io/repos/github/happyucjs/happyuckeys/badge.svg?branch=master)](https://coveralls.io/github/happyucjs/happyuckeys?branch=master) [![npm version](https://badge.fury.io/js/happyuckeys.svg)](http://badge.fury.io/js/happyuckeys)
 
-Keythereum is a JavaScript tool to generate, import and export Ethereum keys.  This provides a simple way to use the same account locally and in web wallets.  It can be used for verifiable cold storage wallets.
+Keythereum is a JavaScript tool to generate, import and export HappyUC keys.  This provides a simple way to use the same account locally and in web wallets.  It can be used for verifiable cold storage wallets.
 
-Keythereum uses the same key derivation functions (PBKDF2-SHA256 or scrypt), symmetric ciphers (AES-128-CTR or AES-128-CBC), and message authentication codes as [geth](https://github.com/ethereum/go-ethereum).  You can export your generated key to file, copy it to your data directory's keystore, and immediately start using it in your local Ethereum client.
+Keythereum uses the same key derivation functions (PBKDF2-SHA256 or scrypt), symmetric ciphers (AES-128-CTR or AES-128-CBC), and message authentication codes as [ghuc](https://github.com/happyuc-project/happyuc-go).  You can export your generated key to file, copy it to your data directory's keystore, and immediately start using it in your local HappyUC client.
 
-*Note: starting in version 0.5.0, keythereum's `encrypt` and `decrypt` functions both return Buffers instead of strings.  This is a breaking change for anyone using these functions directly!*
+*Note: starting in version 0.5.0, happyuckeys's `encrypt` and `decrypt` functions both return Buffers instead of strings.  This is a breaking change for anyone using these functions directly!*
 
 ## Installation
 
 ```
-npm install keythereum
+npm install happyuckeys
 ```
 
 ## Usage
 
-To use keythereum in Node.js, just `require` it:
+To use happyuckeys in Node.js, just `require` it:
 
 ```javascript
-var keythereum = require("keythereum");
+var happyuckeys = require("happyuckeys");
 ```
 
-A minified, browserified file `dist/keythereum.min.js` is included for use in the browser.  Including this file simply attaches the `keythereum` object to `window`:
+A minified, browserified file `dist/happyuckeys.min.js` is included for use in the browser.  Including this file simply attaches the `happyuckeys` object to `window`:
 
 ```html
-<script src="dist/keythereum.min.js" type="text/javascript"></script>
+<script src="dist/happyuckeys.min.js" type="text/javascript"></script>
 ```
 
 ### Key creation
@@ -34,11 +34,11 @@ Generate a new random private key (256 bit), as well as the salt (256 bit) used 
 
 ```javascript
 // optional private key and initialization vector sizes in bytes
-// (if params is not passed to create, keythereum.constants is used by default)
+// (if params is not passed to create, happyuckeys.constants is used by default)
 var params = { keyBytes: 32, ivBytes: 16 };
 
 // synchronous
-var dk = keythereum.create(params);
+var dk = happyuckeys.create(params);
 // dk:
 {
     privateKey: <Buffer ...>,
@@ -47,7 +47,7 @@ var dk = keythereum.create(params);
 }
 
 // asynchronous
-keythereum.create(params, function (dk) {
+happyuckeys.create(params, function (dk) {
     // do stuff!
 });
 ```
@@ -57,14 +57,14 @@ keythereum.create(params, function (dk) {
 You will need to specify a password and (optionally) a key derivation function.  If unspecified, PBKDF2-SHA256 will be used to derive the AES secret key.
 
 ```javascript
-var password = "wheethereum";
+var password = "whehappyuc";
 var kdf = "pbkdf2"; // or "scrypt" to use the scrypt kdf
 ```
 
-The `dump` function is used to export key info to keystore ["secret-storage" format](https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition).  If a callback function is supplied as the sixth parameter to `dump`, it will run asynchronously:
+The `dump` function is used to export key info to keystore ["secret-storage" format](https://github.com/happyuc-project/wiki/wiki/Webu-Secret-Storage-Definition).  If a callback function is supplied as the sixth parameter to `dump`, it will run asynchronously:
 
 ```javascript
-// Note: if options is unspecified, the values in keythereum.constants are used.
+// Note: if options is unspecified, the values in happyuckeys.constants are used.
 var options = {
   kdf: "pbkdf2",
   cipher: "aes-128-ctr",
@@ -76,7 +76,7 @@ var options = {
 };
 
 // synchronous
-var keyObject = keythereum.dump(password, dk.privateKey, dk.salt, dk.iv, options);
+var keyObject = happyuckeys.dump(password, dk.privateKey, dk.salt, dk.iv, options);
 // keyObject:
 {
   address: "008aeeda4d805471df9b2a5b0f38a0c3bcba786b",
@@ -100,15 +100,15 @@ var keyObject = keythereum.dump(password, dk.privateKey, dk.salt, dk.iv, options
 }
 
 // asynchronous
-keythereum.dump(password, dk.privateKey, dk.salt, dk.iv, options, function (keyObject) {
+happyuckeys.dump(password, dk.privateKey, dk.salt, dk.iv, options, function (keyObject) {
   // do stuff!
 });
 ```
 
-`dump` creates an object and not a JSON string.  In Node, the `exportToFile` method provides an easy way to export this formatted key object to file.  It creates a JSON file in the `keystore` sub-directory, and uses geth's current file-naming convention (ISO timestamp concatenated with the key's derived Ethereum address).
+`dump` creates an object and not a JSON string.  In Node, the `exportToFile` method provides an easy way to export this formatted key object to file.  It creates a JSON file in the `keystore` sub-directory, and uses ghuc's current file-naming convention (ISO timestamp concatenated with the key's derived HappyUC address).
 
 ```javascript
-keythereum.exportToFile(keyObject);
+happyuckeys.exportToFile(keyObject);
 ```
 
 After successful key export, you will see a message like:
@@ -117,45 +117,45 @@ After successful key export, you will see a message like:
 Saved to file:
 keystore/UTC--2015-08-11T06:13:53.359Z--008aeeda4d805471df9b2a5b0f38a0c3bcba786b
 
-To use with geth, copy this file to your Ethereum keystore folder
-(usually ~/.ethereum/keystore).
+To use with ghuc, copy this file to your HappyUC keystore folder
+(usually ~/.happyuc/keystore).
 ```
 
 ### Key import
 
-Importing a key from geth's keystore can only be done on Node.  The JSON file is parsed into an object with the same structure as `keyObject` above.
+Importing a key from ghuc's keystore can only be done on Node.  The JSON file is parsed into an object with the same structure as `keyObject` above.
 
 ```javascript
-// Specify a data directory (optional; defaults to ~/.ethereum)
-var datadir = "/home/jack/.ethereum-test";
+// Specify a data directory (optional; defaults to ~/.happyuc)
+var datadir = "/home/jack/.happyuc-test";
 
 // Synchronous
-var keyObject = keythereum.importFromFile(address, datadir);
+var keyObject = happyuckeys.importFromFile(address, datadir);
 
 // Asynchronous
-keythereum.importFromFile(address, datadir, function (keyObject) {
+happyuckeys.importFromFile(address, datadir, function (keyObject) {
   // do stuff
 });
 ```
 This has been tested with version 3 and version 1, but not version 2, keys.  (Please send me a version 2 keystore file if you have one, so I can test it!)
 
-To recover the plaintext private key from the key object, use `keythereum.recover`.  The private key is returned as a Buffer.
+To recover the plaintext private key from the key object, use `happyuckeys.recover`.  The private key is returned as a Buffer.
 
 ```javascript
 // synchronous
-var privateKey = keythereum.recover(password, keyObject);
+var privateKey = happyuckeys.recover(password, keyObject);
 // privateKey:
 <Buffer ...>
 
 // Asynchronous
-keythereum.recover(password, keyObject, function (privateKey) {
+happyuckeys.recover(password, keyObject, function (privateKey) {
   // do stuff
 });
 ```
 
 ### Hashing rounds
 
-By default, keythereum uses 65536 hashing rounds in its key derivation functions, compared to the 262144 geth uses by default.  (Keythereum's JSON output files are still compatible with geth, however, since they tell geth how many rounds to use.)  These values are user-editable: `keythereum.constants.pbkdf2.c` is the number of rounds for PBKDF2, and `keythereum.constants.scrypt.n` is the number of rounds for scrypt.
+By default, happyuckeys uses 65536 hashing rounds in its key derivation functions, compared to the 262144 ghuc uses by default.  (Keythereum's JSON output files are still compatible with ghuc, however, since they tell ghuc how many rounds to use.)  These values are user-editable: `happyuckeys.constants.pbkdf2.c` is the number of rounds for PBKDF2, and `happyuckeys.constants.scrypt.n` is the number of rounds for scrypt.
 
 ## Tests
 
@@ -165,20 +165,20 @@ Unit tests are in the `test` directory, and can be run with mocha:
 npm test
 ```
 
-`test/geth.js` is an integration test, which is run (along with `test/keys.js`) using:
+`test/ghuc.js` is an integration test, which is run (along with `test/keys.js`) using:
 
 ```
-npm run geth
+npm run ghuc
 ```
 
-`geth.js` generates 1000 random private keys, encrypts each key using a randomly-generated passphrase, dumps the encrypted key info to a JSON file, then spawns a geth instance and attempts to unlock each account using its passphrase and JSON file.  The passphrases are between 1 and 100 random bytes.  Each passphrase is tested in both hexadecimal and base-64 encodings, and with PBKDF2-SHA256 and scrypt key derivation functions.
+`ghuc.js` generates 1000 random private keys, encrypts each key using a randomly-generated passphrase, dumps the encrypted key info to a JSON file, then spawns a ghuc instance and attempts to unlock each account using its passphrase and JSON file.  The passphrases are between 1 and 100 random bytes.  Each passphrase is tested in both hexadecimal and base-64 encodings, and with PBKDF2-SHA256 and scrypt key derivation functions.
 
-By default, the flags passed to geth are:
+By default, the flags passed to ghuc are:
 
 ```
-geth --etherbase <account> --unlock <account> --nodiscover --networkid "10101" --port 30304 --rpcport 8547 --datadir test/fixtures --password test/fixtures/.password
+ghuc --coinbase <account> --unlock <account> --nodiscover --networkid "10101" --port 30304 --rpcport 8547 --datadir test/fixtures --password test/fixtures/.password
 ```
 
-`test/fixtures/.password` is a file which contains the passphrase.  The `.password` file, as well as the JSON key files generated by `geth.js`, are automatically deleted after the test.
+`test/fixtures/.password` is a file which contains the passphrase.  The `.password` file, as well as the JSON key files generated by `ghuc.js`, are automatically deleted after the test.
 
-(Note: `geth.js` conducts 4000 tests, each of which can take up to 5 seconds, so running this file can take up to 5.56 hours.)
+(Note: `ghuc.js` conducts 4000 tests, each of which can take up to 5 seconds, so running this file can take up to 5.56 hours.)
